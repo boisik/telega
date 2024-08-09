@@ -1,0 +1,67 @@
+version: '3'
+services:
+  nginx:
+    build:
+      context: docker/backend
+      dockerfile: nginx.docker
+    volumes:
+      - ../backend/:/app
+    depends_on:
+      - php-fpm
+    ports:
+      - "81:80"
+
+  php-fpm:
+    build:
+      context: docker/backend/development
+      dockerfile: php-fpm.docker
+    volumes:
+      - ../back/:/app
+    depends_on:
+      - db
+
+  db:
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes:
+#      - db/:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+    ports:
+      - "3307:3306"
+
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8081:8080"
+
+  mailer:
+    image: mailhog/mailhog
+    ports:
+      - "8025:8025"
+
+
+  frontend-nginx:
+    build:
+      context: docker/frontend
+      dockerfile: nginx.docker
+    volumes:
+      - ../front/:/var/www/frontend
+    depends_on:
+      - php-fpm
+    ports:
+      - "82:80"
+
+  frontend-nodejs:
+    image: node:14.15.3-alpine
+    volumes:
+      - ../front/:/var/www/frontend
+    working_dir: /var/www/frontend
+    tty: true
+
+
+#volumes:
+#  db:

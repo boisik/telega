@@ -1,0 +1,19 @@
+FROM php:8.2-fpm
+
+# Download script to install PHP extensions and dependencies
+ADD https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions /usr/local/bin/
+RUN chmod uga+x /usr/local/bin/install-php-extensions && sync
+
+RUN apt-get update && apt-get install -y \
+    wget zip git
+
+#RUN install-php-extensions pdo pdo_mysql pdo_pgsql mysqli pgsql xdebug opcache curl mbstring zip xml bcmath gd intl exif BCMath Ctype DOM Fileinfo JSON OpenSSL PCRE Tokenizer
+RUN install-php-extensions xdebug Ctype iconv PCRE Session SimpleXML Tokenizer pdo pdo_pgsql pgsql intl gd mbstring DOM zip
+
+RUN wget https://getcomposer.org/installer -O - -q | php -- --install-dir=/bin --filename=composer --quiet --version=2.5.2
+
+# Add user for application
+RUN groupadd -g 1000 www
+RUN useradd -u 1000 -ms /bin/bash -g www www
+
+WORKDIR /app
