@@ -6,10 +6,19 @@ RUN chmod uga+x /usr/local/bin/install-php-extensions && sync
 
 RUN apt-get update && apt-get install -y \
     wget zip git
-
-#RUN install-php-extensions pdo pdo_mysql pdo_pgsql mysqli pgsql xdebug opcache curl mbstring zip xml bcmath gd intl exif BCMath Ctype DOM Fileinfo JSON OpenSSL PCRE Tokenizer
-RUN install-php-extensions xdebug Ctype iconv PCRE Session SimpleXML Tokenizer pdo pdo_pgsql pgsql intl gd mbstring DOM zip
-
+ RUN apt-get update && apt-get install -y \
+       git \
+       zip \
+       unzip \
+       libpng-dev \
+       libonig-dev \
+       libxml2-dev \
+       libzip-dev \
+       && docker-php-ext-install \
+       pdo_mysql \
+       zip \
+       && pecl install xdebug \
+       && docker-php-ext-enable xdebug
 RUN wget https://getcomposer.org/installer -O - -q | php -- --install-dir=/bin --filename=composer --quiet --version=2.5.2
 
 # Add user for application
