@@ -4,15 +4,5 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library name="PHARS">
-        <CLASSES>
-          <root url="phar://$MODULE_DIR$/back/vendor/symfony/maker-bundle/src/Resources/bin/php-cs-fixer-v3.49.0.phar/" />
-        </CLASSES>
-        <SOURCES>
-          <root url="phar://$MODULE_DIR$/back/vendor/symfony/maker-bundle/src/Resources/bin/php-cs-fixer-v3.49.0.phar/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
   </component>
 </module>

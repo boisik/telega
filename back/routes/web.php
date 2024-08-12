@@ -18,6 +18,7 @@ $router->get('/', function () use ($router) {
 });
 
 $router->get('/ololo', function () use ($router) {
-    return 'Hello World';
+    $results = DB::select("SELECT * FROM users");
+    dd($results);
 });
 
