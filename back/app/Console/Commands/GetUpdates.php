@@ -13,7 +13,6 @@ namespace App\Console\Commands;
 
 use Exception;
 use Illuminate\Console\Command;
-use Longman\TelegramBot\Telegram;
 
 use Telegram\Bot\Api;
 
@@ -48,22 +47,17 @@ class GetUpdates extends Command
     public function handle()
     {
 
-        $bot_api_key  = 'your:bot_api_key';
-        $bot_username = 'username_bot';
-
-        $mysql_credentials = [
-            'host'     => 'localhost',
-            'port'     => 3306, // optional
-            'user'     => 'admin',
-            'password' => 'admin',
-            'database' => 'telegabot',
-        ];
 
         $telegram = new Api('6967376895:AAEGSoh5qp1kDyEHixB5-CoTe1WVmDikLTA');
+        //$response = $telegram->setWebhook(['url' => 'https://da0a-185-230-143-47.ngrok-free.app/6967376895:AAEGSoh5qp1kDyEHixB5-CoTe1WVmDikLTA/webhook']);
 
 // Example usage
-        $updates = $telegram->getUpdates();
-dd($updates);
+        $response = $telegram->sendMessage([
+            'chat_id' => '2050824714',
+            'text' => 'Hello World'
+
+        ]);
+dd($response);
 
     }
 }
