@@ -21,26 +21,6 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-
 $router->post('/webhook', 'TelegramController@getInfo');
 
-$router->post('/webhookddd', function () {
-
-    $config = [
-        'bots' => [
-            'mybot' => [
-                'token' => '6967376895:AAEGSoh5qp1kDyEHixB5-CoTe1WVmDikLTA',
-            ],
-        ]
-    ];
-
-    $telegram = new BotsManager($config);
-    $response=  $telegram->bot('mybot')->getWebhookUpdate();
-
-
-
-    file_put_contents('qwe.txt',var_export($response),FILE_APPEND);
-
-    return 'ok';
-});
 
