@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 
-class User extends Model
+class MessageHistory extends Model
 {
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -15,18 +17,14 @@ class User extends Model
      */
     protected $fillable = [
         'user_id',
-        'first_name',
-        'last_name',
-        'username',
+        'type',
+        'value',
+        'date',
     ];
 
     protected $casts = [
         'user_id' => 'integer',
+        'date' => 'datetime',
     ];
 
-
-    public static function whereUserId($userId)
-    {
-        return static::query()->where('user_id', $userId);
-    }
 }

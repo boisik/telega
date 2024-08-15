@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 
-class User extends Model
+class ChatUser extends Model
 {
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -14,19 +16,12 @@ class User extends Model
      * @var string[]
      */
     protected $fillable = [
-        'user_id',
-        'first_name',
-        'last_name',
-        'username',
+        'chat_id',
+        'user_id'
     ];
 
     protected $casts = [
+        'chat_id' => 'integer',
         'user_id' => 'integer',
     ];
-
-
-    public static function whereUserId($userId)
-    {
-        return static::query()->where('user_id', $userId);
-    }
 }
