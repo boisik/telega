@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 
-class PidorOfTheDay extends Model
+class AssholeOfTheDay extends Model
 {
     use HasFactory;
-    protected $table = 'pidor_of_the_day';
+    protected $table = 'asshole_of_the_day';
 
     /**
      * The attributes that are mass assignable.

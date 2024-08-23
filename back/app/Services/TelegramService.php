@@ -12,9 +12,12 @@ namespace App\Services;
 use App\Models\ChatUser;
 use App\Models\MessageHistory;
 use App\Models\User;
+use App\Services\BotCommands\AssholeStatsCommandHandler;
+use App\Services\BotCommands\HandsomeStatsCommandHandler;
+use App\Services\BotCommands\KtoTutKrasavaCommandHandler;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Api;
-use App\Services\BotCommands\KtoTutPidorCommandHandler;
+use App\Services\BotCommands\ktoTutAssholeCommandHandler;
 
 class TelegramService
 {
@@ -22,23 +25,40 @@ class TelegramService
 
     private $commands =
         [
-         'ktoTutPidorCommandHandler'  =>'ktotutpidor',
-         'PidorStatsCommandHandler'   =>'pidorstats',
-         'KtoKrasavaCommandHandler'   =>'ktokrasava',
-         'KrasavaStatsCommandHandler' =>'krasavastats',
+         'ktoTutAssholeCommandHandler'  =>'ktotutpidor',
+         'ktoTutKrasavaCommandHandler'   =>'ktokrasava',
+         'assholeStatsCommandHandler'   =>'pidorstats',
+         'handsomeStatsCommandHandler' =>'krasavastats',
         ]
     ;
+
     /**
-     * @var KtoTutPidorCommandHandler
+     * @var KtoTutKrasavaCommandHandler
      */
-    private $ktoTutPidorCommandHandler;
+    private $ktoTutKrasavaCommandHandler;
+
+    private $ktoTutAssholeCommandHandler;
+    /**
+     * @var AssholeStatsCommandHandler
+     */
+    private $assholeStatsCommandHandler;
+    /**
+     * @var HandsomeStatsCommandHandler
+     */
+    private $handsomeStatsCommandHandler;
 
     public function __construct(
-        KtoTutPidorCommandHandler $ktoTutPidorCommandHandler = null
+        KtoTutAssholeCommandHandler $ktoTutAssholeCommandHandler = null,
+        KtoTutKrasavaCommandHandler $ktoTutKrasavaCommandHandler = null,
+        AssholeStatsCommandHandler  $assholeStatsCommandHandler = null,
+        HandsomeStatsCommandHandler $handsomeStatsCommandHandler= null
     )
     {
         $this->telegram = new Api('6967376895:AAEGSoh5qp1kDyEHixB5-CoTe1WVmDikLTA');
-        $this->ktoTutPidorCommandHandler = $ktoTutPidorCommandHandler;
+        $this->ktoTutAssholeCommandHandler = $ktoTutAssholeCommandHandler;
+        $this->ktoTutKrasavaCommandHandler = $ktoTutKrasavaCommandHandler;
+        $this->assholeStatsCommandHandler = $assholeStatsCommandHandler;
+        $this->handsomeStatsCommandHandler = $handsomeStatsCommandHandler;
     }
 
     /**
@@ -61,7 +81,8 @@ class TelegramService
         $userId    = $message['message']['from']['id'];
         $firstName = isset($message['message']['from']['first_name']) ? $message['message']['from']['first_name'] : 'undefined';
         $lastName = isset($message['message']['from']['last_name']) ? $message['message']['from']['last_name'] : 'undefined';
-        $userName  = $message['message']['from']['username'];
+        $userName  = isset($message['message']['from']['username']) ? $message['message']['from']['username'] : $firstName.'###'.$lastName;
+
 
         $user = User::whereUserId($userId);
         if ($user) {
@@ -137,7 +158,7 @@ class TelegramService
                 continue;
             } else {
                 $command = $this->$commandClass;
-                $command->execute();
+                $command->execute($message);
             }
         }
     }

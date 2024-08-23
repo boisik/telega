@@ -39,7 +39,6 @@ class TelegramController extends Controller
      */
     public function getInfo(Request $request)
     {
-        return;
 /*
  * Структура содержимого в $message
  *[{"update_id":608708731,"message":{"message_id":210,"from":{"id":2050824714,"is_bot":false,"first_name":"Bиктoр","last_name":"Meльников","username":"melnikovusername","language_code":"ru"},"chat":{"id":2050824714,"first_name":"Bиктoр","last_name":"Meльников","username":"melnikovusername","type":"private"},"date":1723779915,"text":"d"}}]
@@ -54,7 +53,7 @@ class TelegramController extends Controller
        $userId    = $message['message']['from']['id'];
        $firstName = isset($message['message']['from']['first_name']) ? $message['message']['from']['first_name'] : 'undefined';
        $lastName = isset($message['message']['from']['last_name']) ? $message['message']['from']['last_name'] : 'undefined';
-       $userName  = $message['message']['from']['username'];
+       $userName  = isset($message['message']['from']['username']) ? $message['message']['from']['username'] : $firstName.'###'.$lastName;
 
        $this->telegramService->storeUserActivity($message);
        $this->telegramService->detectRequestType($message);
@@ -97,10 +96,9 @@ class TelegramController extends Controller
         $eDate= (new DateTime())->format('Y-m-d 23:59:59');
 
        $mh =  MessageHistory::query()->whereBetween('created_at', [$bDate, $eDate])->first();
-dd($mh);
         /*    $response = $this->telegramService->telegram->sendMessage([
                 'chat_id' => '-1002245688647',
-                'text' => '@lestet_94 несомненно пока что пидор всех дней пока функционал не будет реализован 💋💋💋💋💋'
+                'text' => ''
             ]);*/
 
         //https://api.telegram.org/bot6967376895:AAEGSoh5qp1kDyEHixB5-CoTe1WVmDikLTA/setWebhook?url=https://ef71-185-230-143-47.ngrok-free.app/webhook
