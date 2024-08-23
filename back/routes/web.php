@@ -23,4 +23,7 @@ $router->get('/', function () use ($router) {
 
 $router->post('/webhook', 'TelegramController@getInfo');
 
+$router->get('/test', 'TelegramController@test');
+
+
 

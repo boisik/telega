@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 
-class MessageHistory extends Model
+class PidorOfTheDay extends Model
 {
     use HasFactory;
-    protected $table = 'message_history';
+    protected $table = 'pidor_of_the_day';
 
     /**
      * The attributes that are mass assignable.
@@ -17,16 +17,9 @@ class MessageHistory extends Model
      * @var string[]
      */
     protected $fillable = [
-        'user_id',
-        'type',
-        'value',
-        'date',
-        'chat_id'
+        'chat_id',
+        'user_id'
     ];
 
-    protected $casts = [
-
-        'date' => 'datetime',
-    ];
 
 }

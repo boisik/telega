@@ -20,13 +20,11 @@ class User extends Model
         'username',
     ];
 
-    protected $casts = [
-        'user_id' => 'integer',
-    ];
+
 
 
     public static function whereUserId($userId)
     {
-        return static::query()->where('user_id', $userId);
+        return static::query()->where('user_id', $userId)->first();
     }
 }

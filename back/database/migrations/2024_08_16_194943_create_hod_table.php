@@ -11,15 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('message_history', function (Blueprint $table) {
+        Schema::create('handsome_of_the_day', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->string('user_id');
             $table->string('chat_id');
-            $table->string('type');
-            $table->string('value');
-            $table->dateTime('date');
-
         });
     }
 
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('message_history');
+        Schema::dropIfExists('handsome_of_the_day');
     }
 };

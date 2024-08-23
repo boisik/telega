@@ -20,8 +20,5 @@ class ChatUser extends Model
         'user_id'
     ];
 
-    protected $casts = [
-        'chat_id' => 'integer',
-        'user_id' => 'integer',
-    ];
+
 }
