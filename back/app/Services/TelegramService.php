@@ -15,6 +15,7 @@ use App\Models\Users;
 use App\Services\BotCommands\AssholeStatsCommandHandler;
 use App\Services\BotCommands\HandsomeStatsCommandHandler;
 use App\Services\BotCommands\KtoTutKrasavaCommandHandler;
+use App\Services\BotCommands\WeatherForecastCommandHandler;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Api;
 use App\Services\BotCommands\ktoTutAssholeCommandHandler;
@@ -29,6 +30,7 @@ class TelegramService
          'ktoTutKrasavaCommandHandler'   =>'ktokrasava',
          'assholeStatsCommandHandler'   =>'pidorstats',
          'handsomeStatsCommandHandler' =>'krasavastats',
+         'weatherForecastCommandHandler' =>'weatherinfo',
         ]
     ;
 
@@ -46,12 +48,17 @@ class TelegramService
      * @var HandsomeStatsCommandHandler
      */
     private $handsomeStatsCommandHandler;
+    /**
+     * @var WeatherForecastCommandHandler
+     */
+    private $weatherForecastCommandHandler;
 
     public function __construct(
         KtoTutAssholeCommandHandler $ktoTutAssholeCommandHandler = null,
         KtoTutKrasavaCommandHandler $ktoTutKrasavaCommandHandler = null,
         AssholeStatsCommandHandler  $assholeStatsCommandHandler = null,
-        HandsomeStatsCommandHandler $handsomeStatsCommandHandler= null
+        HandsomeStatsCommandHandler $handsomeStatsCommandHandler= null,
+        WeatherForecastCommandHandler $weatherForecastCommandHandler = null
     )
     {
         $this->telegram = new Api('6967376895:AAEGSoh5qp1kDyEHixB5-CoTe1WVmDikLTA');
@@ -59,6 +66,7 @@ class TelegramService
         $this->ktoTutKrasavaCommandHandler = $ktoTutKrasavaCommandHandler;
         $this->assholeStatsCommandHandler = $assholeStatsCommandHandler;
         $this->handsomeStatsCommandHandler = $handsomeStatsCommandHandler;
+        $this->weatherForecastCommandHandler = $weatherForecastCommandHandler;
     }
 
     /**

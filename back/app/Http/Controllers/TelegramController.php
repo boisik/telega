@@ -79,15 +79,30 @@ class TelegramController extends Controller
 
 
        if ($chatType=='private'){
+          /* $ch = curl_init();
 
-//            $phrases = $this->phrasesService->getSomePhrases('startLookingForHandSomeProcess',5);
-//            foreach ($phrases as $phrase){
-//                $response = $this->telegramService->telegram->sendMessage([
-//                    'chat_id' => $chatId,
-//                    'text' => $phrase['value']
-//                ]);
-//            }
+           curl_setopt($ch, CURLOPT_URL, 'http://api.weatherstack.com/current?access_key=6f364f29c9394a760229e0f7e29bbeef&query=Kerch,Ukraine');
+           curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+           curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
 
+           $result = curl_exec($ch);
+           if (curl_errno($ch)) {
+               echo 'Error:' . curl_error($ch);
+           }
+           curl_close($ch);
+           $res = json_decode($result);
+
+           $locationRow = "Location :  ".$res->location->name." ".$res->location->region."  ⚓ 🏚🏚 🌈 💞" ;
+           $timeZoneRow = "Timezone :  ".$res->location->timezone_id."  ".$res->location->localtime."  ⏲⏰🕰";
+           $temperatureRow = "Temperature : ".$res->current->temperature."  🌡🌡🌡🌡  Feelslike :  ".$res->current->feelslike;
+           $weatherDescriptionsRow = "Text description : ".$res->current->weather_descriptions[0]." 🆗🆗🆗";
+           $humidityRow = "Humidity : ".$res->current->humidity."  💧";
+           $windRow = "Wind: ".$res->current->wind_speed."m/s   Direction(не все поймут):".$res->current->wind_dir." ♻️♻️♻️♻";
+
+           $response = $this->telegramService->telegram->sendMessage([
+                    'chat_id' => $chatId,
+                    'text' => $locationRow."\n"."\n".$timeZoneRow."\n"."\n".$temperatureRow."\n"."\n".$weatherDescriptionsRow."\n"."\n".$humidityRow."\n"."\n".$windRow
+                ]);*/
 
         }
 
@@ -104,33 +119,27 @@ class TelegramController extends Controller
 
     public function test(Request $request)
     {
-        /*$ch = curl_init();
-
-        curl_setopt($ch, CURLOPT_URL, 'https://api.gismeteo.net/v2/weather/current/?latitude=45.3534002&longitude=36.4538645');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-
-
-        $headers = array();
-        $headers[] = 'X-Gismeteo-Token: 56b30cb255.3443075';
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-        $result = curl_exec($ch);
-        if (curl_errno($ch)) {
-            echo 'Error:' . curl_error($ch);
-        }
-        curl_close($ch);*/
         $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL, 'https://api.open-meteo.com/v1/forecast?latitude=45.3534002&longitude=36.4538645&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m');
+        curl_setopt($ch, CURLOPT_URL, 'http://api.weatherstack.com/current?access_key=6f364f29c9394a760229e0f7e29bbeef&query=Kerch,Ukraine');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
 
         $result = curl_exec($ch);
         if (curl_errno($ch)) {
             echo 'Error:' . curl_error($ch);
         }
         curl_close($ch);
-        Log::info(get_class($this), [$result]);
+$res = json_decode($result);
 
+$locationRow = 'Location :'.$res->location->name.' '.$res->location->region.'  ⚓ 🏚🏚 🌈 💞';
+$timeZoneRow = 'Timezone :'.$res->location->timezone_id.'   '.$res->location->localtime.'  ⏲⏰🕰';
+$temperatureRow = 'Temperature :'.$res->current->temperature.'  🌡🌡🌡🌡'.'  feelslike'.$res->current->feelslike;
+$weatherDescriptionsRow = 'Text description :'.$res->current->weather_descriptions[0];
+$humidityRow = 'Humidity :'.$res->current->humidity.'  💧';
+$windRow = 'Wind:'.$res->current->wind_speed.'   '.$res->current->wind_dir;
+
+        return response()
+            ->json($result);
     }
 }

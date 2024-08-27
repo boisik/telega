@@ -1,0 +1,4 @@
+ktotutpidor - поиск пидора
+pidorstats - статистика по пидорам
+ktokrasava - определение красотули
+krasavastats - статистика по красотульчикам
