@@ -11,7 +11,7 @@ namespace App\Services;
 
 use App\Models\ChatUser;
 use App\Models\MessageHistory;
-use App\Models\User;
+use App\Models\Users;
 use App\Services\BotCommands\AssholeStatsCommandHandler;
 use App\Services\BotCommands\HandsomeStatsCommandHandler;
 use App\Services\BotCommands\KtoTutKrasavaCommandHandler;
@@ -68,8 +68,8 @@ class TelegramService
     public function storeUserActivity($message)
     {
         $this->userCheck($message);
-        $this->userChatRelationSave($message);
-       $this->userMessageSave($message);
+       $this->userChatRelationSave($message);
+      $this->userMessageSave($message);
     }
 
     /**
@@ -84,11 +84,11 @@ class TelegramService
         $userName  = isset($message['message']['from']['username']) ? $message['message']['from']['username'] : $firstName.'###'.$lastName;
 
 
-        $user = User::whereUserId($userId);
-        if ($user) {
+        $user = Users::query()->where('user_id', $userId)->first();
+       if ($user) {
             Log::info(get_class($this).' user exist');
         } else {
-            User::query()->create(
+            Users::query()->create(
                 [
                     'user_id' => $userId,
                     'first_name' => $firstName,

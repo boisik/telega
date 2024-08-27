@@ -10,12 +10,27 @@ namespace App\Services\BotCommands;
 
 use App\Models\ChatUser;
 use App\Models\AssholeOfTheDay;
-use App\Models\User;
+use App\Models\Users;
+use App\Services\PhrasesService;
 use DateTime;
 use Illuminate\Support\Facades\Log;
 
 class KtoTutAssholeCommandHandler extends AbstractCommand
 {
+
+    /**
+     * @var PhrasesService
+     */
+    private $phrasesService;
+
+    public function __construct(
+
+        PhrasesService $phrasesService
+    )
+    {
+        parent::__construct();
+        $this->phrasesService = $phrasesService;
+    }
 
 
     public function execute($message)
@@ -47,59 +62,36 @@ class KtoTutAssholeCommandHandler extends AbstractCommand
             );
             Log::info(get_class($this).' $asshole was created',$asshole);
 
+            $phraseForBegin = $this->phrasesService->getSomePhrases('startLookingForAssholeProcess',1);
+
             $response = $this->telegram->sendMessage([
                 'chat_id' => $chatId,
-                'text' => 'ВНИМАНИЕ, ВРЕМЯ ПОИСКА САМОЙ ПИДОРСКОЙ ОБОЯШКИ НА СЕГОДНЯ'
+                'text' => $phraseForBegin[0]['value']
             ]);
             sleep(2);
+
+            $phrases = $this->phrasesService->getSomePhrases('lookingForAssholeProcess',5);
+            foreach ($phrases as $phrase){
+                $response = $this->telegram->sendMessage([
+                    'chat_id' => $chatId,
+                    'text' => $phrase['value']
+                ]);
+                sleep(2);
+            }
+
+            $assholeUsername = $asshole['username'];
+            $phraseForEnd = $this->phrasesService->getSomePhrases('endLookingForAssholeProcess',1);
+
+            $phraseForEnd = str_replace('$$ASSHOLE$$', "@"."$assholeUsername", $phraseForEnd[0]['value']);
             $response = $this->telegram->sendMessage([
                 'chat_id' => $chatId,
-                'text' => '....ПЕРЕЧИТЫВАЕМ ЧАТ ЗА СУТКИ 📰 🗞 🗒 📑'
+                'text' => $phraseForEnd
             ]);
-            sleep(2);
-            $response = $this->telegram->sendMessage([
-                'chat_id' => $chatId,
-                'text' => '....ИЗУЧАЕМ ГОРОСКОПЫ 🔭 🌕 🌖 🌗 🌘 🌑'
-            ]);
-            sleep(2);
-            $response = $this->telegram->sendMessage([
-                'chat_id' => $chatId,
-                'text' => '....ЗАГЛЯДЫВАЕМ В ДИЮ 🍕 🍷 🍺 🍸'
-            ]);
-            sleep(2);
-            $response = $this->telegram->sendMessage([
-                'chat_id' => $chatId,
-                'text' => '....МОНИТОРИМ РЕЙТИНГИ В КОНТЕРСТРАЙКАХ 🔫🔫🔫🔫 🔪🔪🔪🔪🔪🔪'
-            ]);
-            sleep(2);
-            $response = $this->telegram->sendMessage([
-                'chat_id' => $chatId,
-                'text' => '....ИЩЕМ ПРОСРОЧКУ В ЛЕТУАЛЕ 💄 💅 '
-            ]);
-            sleep(2);
-            $response = $this->telegram->sendMessage([
-                'chat_id' => $chatId,
-                'text' => '....СМОТРИМ РАСПИСАНИЕ ГАРМОНИИ 👶 👦 👧 👨'
-            ]);
-            sleep(2);
-            $response = $this->telegram->sendMessage([
-                'chat_id' => $chatId,
-                'text' => '....ОЗНАКАМЛИВАЕМСЯ С ГОСТЕВЫМ СПИСКОМ НА ДЕЙКАЛО 4     (и 32)  😺 😻 😾 🐈🐈🐈🐈'
-            ]);
-            sleep(2);
-            $response = $this->telegram->sendMessage([
-                'chat_id' => $chatId,
-                'text' => '....ФИЛЬТРУЕМ СВОДКИ МВД 🚓🚓🚓'
-            ]);
-            sleep(2);
-            $response = $this->telegram->sendMessage([
-                'chat_id' => $chatId,
-                'text' => 'На сегодня,🎯🎯🎯🎯🎯🎯🎯 почетный пидор дня - @'.$asshole['username']
-            ]);
+
 
 
         }else{
-            $user = User::query()
+            $user = Users::query()
                 ->where('user_id',$currentAsshole->toArray()['user_id'])
                 ->get()
                 ->toArray()

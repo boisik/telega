@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\MessageHistory;
+use App\Services\PhrasesService;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -18,6 +19,10 @@ class TelegramController extends Controller
      * @var TelegramService
      */
     private $telegramService;
+    /**
+     * @var PhrasesService
+     */
+    private $phrasesService;
 
     /**
      * Create a new controller instance.
@@ -25,10 +30,12 @@ class TelegramController extends Controller
      * @return void
      */
     public function __construct(
-        TelegramService  $telegramService
+        TelegramService  $telegramService,
+        PhrasesService $phrasesService
     )
     {
         $this->telegramService = $telegramService;
+        $this->phrasesService = $phrasesService;
     }
 
     /**
@@ -55,8 +62,8 @@ class TelegramController extends Controller
        $lastName = isset($message['message']['from']['last_name']) ? $message['message']['from']['last_name'] : 'undefined';
        $userName  = isset($message['message']['from']['username']) ? $message['message']['from']['username'] : $firstName.'###'.$lastName;
 
-       $this->telegramService->storeUserActivity($message);
-       $this->telegramService->detectRequestType($message);
+      $this->telegramService->storeUserActivity($message);
+      $this->telegramService->detectRequestType($message);
 
         $chatType  = $message['message']['chat']['type'];
         $chatId    = $message['message']['chat']['id'];
@@ -71,11 +78,17 @@ class TelegramController extends Controller
 
 
 
-        if ($chatType=='private'){
-            $response = $this->telegramService->telegram->sendMessage([
-                'chat_id' => $chatId,
-                'text' => 'прости, но пока что, могу сказать лишь что ты пидор'
-            ]);
+       if ($chatType=='private'){
+
+//            $phrases = $this->phrasesService->getSomePhrases('startLookingForHandSomeProcess',5);
+//            foreach ($phrases as $phrase){
+//                $response = $this->telegramService->telegram->sendMessage([
+//                    'chat_id' => $chatId,
+//                    'text' => $phrase['value']
+//                ]);
+//            }
+
+
         }
 
     /*    $response = $this->telegramService->telegram->sendMessage([
@@ -83,7 +96,7 @@ class TelegramController extends Controller
             'text' => '@lestet_94 несомненно пока что пидор всех дней пока функционал не будет реализован 💋💋💋💋💋'
         ]);*/
 
-        //https://api.telegram.org/bot6967376895:AAEGSoh5qp1kDyEHixB5-CoTe1WVmDikLTA/setWebhook?url=https://f0c6-194-15-147-11.ngrok-free.app/webhook
+        //https://api.telegram.org/bot6967376895:AAEGSoh5qp1kDyEHixB5-CoTe1WVmDikLTA/setWebhook?url=https://bd97-194-15-147-11.ngrok-free.app/webhook
 
 
     }
@@ -91,18 +104,33 @@ class TelegramController extends Controller
 
     public function test(Request $request)
     {
-        return;
-        $bDate= (new DateTime())->format('Y-m-d 00:59:59');
-        $eDate= (new DateTime())->format('Y-m-d 23:59:59');
+        /*$ch = curl_init();
 
-       $mh =  MessageHistory::query()->whereBetween('created_at', [$bDate, $eDate])->first();
-        /*    $response = $this->telegramService->telegram->sendMessage([
-                'chat_id' => '-1002245688647',
-                'text' => ''
-            ]);*/
+        curl_setopt($ch, CURLOPT_URL, 'https://api.gismeteo.net/v2/weather/current/?latitude=45.3534002&longitude=36.4538645');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
 
-        //https://api.telegram.org/bot6967376895:AAEGSoh5qp1kDyEHixB5-CoTe1WVmDikLTA/setWebhook?url=https://ef71-185-230-143-47.ngrok-free.app/webhook
 
+        $headers = array();
+        $headers[] = 'X-Gismeteo-Token: 56b30cb255.3443075';
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $result = curl_exec($ch);
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+        }
+        curl_close($ch);*/
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, 'https://api.open-meteo.com/v1/forecast?latitude=45.3534002&longitude=36.4538645&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        $result = curl_exec($ch);
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+        }
+        curl_close($ch);
+        Log::info(get_class($this), [$result]);
 
     }
 }

@@ -10,13 +10,25 @@ namespace App\Services\BotCommands;
 
 use App\Models\ChatUser;
 use App\Models\HandsomeOfTheDay;
-use App\Models\User;
+use App\Models\Users;
+use App\Services\PhrasesService;
 use DateTime;
 use Illuminate\Support\Facades\Log;
 
 class KtoTutKrasavaCommandHandler extends AbstractCommand
 {
+    /**
+     * @var PhrasesService
+     */
+    private $phrasesService;
 
+    public function __construct(
+        PhrasesService $phrasesService
+    )
+    {
+        parent::__construct();
+        $this->phrasesService = $phrasesService;
+    }
 
     public function execute($message)
     {
@@ -46,53 +58,24 @@ class KtoTutKrasavaCommandHandler extends AbstractCommand
                 ]
             );
             Log::info(get_class($this).' $krasava was created',$krasava);
+            $phraseForBegin = $this->phrasesService->getSomePhrases('startLookingForHandSomeProcess',1);
+            Log::info(get_class($this).$phraseForBegin);
+            $response = $this->telegram->sendMessage([
+                'chat_id' => $chatId,
+                'text' => $phraseForBegin[0]['value']
+            ]);
+            sleep(2);
 
-            $response = $this->telegram->sendMessage([
-                'chat_id' => $chatId,
-                'text' => 'ВНИМАНИЕ, ПОРА ОБЛИЧИТЬ САМУЮ УСПЕШНУЮ КРАСОТУЛИЧКУ СЕГОДНЯШНЕГО ДНЯ'
-            ]);
-            sleep(2);
-            $response = $this->telegram->sendMessage([
-                'chat_id' => $chatId,
-                'text' => '.... 📖 🗞 🗒 ☎️ МОНИТОРИМ ЧАТИК'
-            ]);
-            sleep(2);
-            $response = $this->telegram->sendMessage([
-                'chat_id' => $chatId,
-                'text' => '....ОСМАТРИВАЕМ ВАШИ СПИСКИ РЕКОМЕНДУЕМОГО НА WILDBERRYES 🎹 🎁 🔞 👕 👗 👔 👠'
-            ]);
-            sleep(2);
-            $response = $this->telegram->sendMessage([
-                'chat_id' => $chatId,
-                'text' => '....ПРОСМАТРИВАЕМ ПОСЛЕДНИЕ ВИДОСЫ ИЗ LETKA 🎤 🎼 💃 👀'
-            ]);
-            sleep(2);
-            $response = $this->telegram->sendMessage([
-                'chat_id' => $chatId,
-                'text' => '....ОПРАШИВАЕМ ВАШИХ СОСЕДЕЙ  🗣 💥 🍪'
-            ]);
-            sleep(2);
-            $response = $this->telegram->sendMessage([
-                'chat_id' => $chatId,
-                'text' => '....ЗАПРАШИВАЕМ СПРАВКИ О НЕСУДИМОСТИ И СПИСКИ ШТРАФОВ ИЗ ГИБДД 🎥'
-            ]);
-            sleep(2);
-            $response = $this->telegram->sendMessage([
-                'chat_id' => $chatId,
-                'text' => '....МОЛИМСЯ ГОСПОДУ О ПОСЛАНИИ НАМ ДОПОЛНИТЕЛЬНОЙ ИНФЫ НА EMAIL ✝ 🕌 📧 ☪'
-            ]);
-            sleep(2);
-            $response = $this->telegram->sendMessage([
-                'chat_id' => $chatId,
-                'text' => '....ЖДЕМ ЕЩЕ 5 СЕК ДЛЯ ИНТРИГИ ЕБАНОЙ 🕚 🕛'
-            ]);
-            sleep(5);
+            $phrases = $this->phrasesService->getSomePhrases('lookingForHandSomeProcess',5);
+            foreach ($phrases as $phrase){
+                $response = $this->telegram->sendMessage([
+                    'chat_id' => $chatId,
+                    'text' => $phrase['value']
+                ]);
+                sleep(2);
+            }
 
-            $response = $this->telegram->sendMessage([
-                'chat_id' => $chatId,
-                'text' => '....НУ ИЛИ НЕ 5. ЧТО ТУТ ЕЩЕ СКАЗАТЬ, НУ - ХУЙ! 🐛'
-            ]);
-            sleep(5);
+            sleep(2);
 
 
             $response = $this->telegram->sendMessage([
@@ -102,12 +85,12 @@ class KtoTutKrasavaCommandHandler extends AbstractCommand
 
 
         }else{
-            $user = User::query()
+            $user = Users::query()
                 ->where('user_id',$currentKrasava->toArray()['user_id'])
                 ->get()
                 ->toArray()
                 ;
-            Log::info(get_class($this).' pidor here',[$user[0]['username']]);
+            Log::info(get_class($this).' $krasava here',[$user[0]['username']]);
 
 
             $response = $this->telegram->sendMessage([
