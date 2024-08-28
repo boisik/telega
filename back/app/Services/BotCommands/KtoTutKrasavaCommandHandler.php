@@ -59,7 +59,7 @@ class KtoTutKrasavaCommandHandler extends AbstractCommand
             );
             Log::info(get_class($this).' $krasava was created',$krasava);
             $phraseForBegin = $this->phrasesService->getSomePhrases('startLookingForHandSomeProcess',1);
-            Log::info(get_class($this).$phraseForBegin);
+          
             $response = $this->telegram->sendMessage([
                 'chat_id' => $chatId,
                 'text' => $phraseForBegin[0]['value']
