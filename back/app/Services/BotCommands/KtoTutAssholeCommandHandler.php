@@ -99,10 +99,16 @@ class KtoTutAssholeCommandHandler extends AbstractCommand
             Log::info(get_class($this).' $asshole here',[$user[0]['username']]);
 
 
+            $phraseForEnd = $this->phrasesService->getSomePhrases('assholeAlreadyfound',1);
+            $assholeUsername = $user[0]['username'];
+
+            $phraseForEnd = str_replace('$$ASSHOLE$$', "$assholeUsername", $phraseForEnd[0]['value']);
             $response = $this->telegram->sendMessage([
                 'chat_id' => $chatId,
-                'text' => 'На сегодня, позиция Пидора дня уже определена. это '.$user[0]['username'].'💋💋💋 (повторно тегать не будем) но если будешь заебывать, пересчитаем в твою пользу 🌺'
+                'text' => $phraseForEnd
             ]);
+
+
         }
     }
 

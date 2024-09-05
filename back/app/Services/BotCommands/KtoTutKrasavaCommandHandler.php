@@ -59,7 +59,7 @@ class KtoTutKrasavaCommandHandler extends AbstractCommand
             );
             Log::info(get_class($this).' $krasava was created',$krasava);
             $phraseForBegin = $this->phrasesService->getSomePhrases('startLookingForHandSomeProcess',1);
-          
+
             $response = $this->telegram->sendMessage([
                 'chat_id' => $chatId,
                 'text' => $phraseForBegin[0]['value']
@@ -77,11 +77,15 @@ class KtoTutKrasavaCommandHandler extends AbstractCommand
 
             sleep(2);
 
+            $krasavaUsername = $krasava['username'];
+            $phraseForEnd = $this->phrasesService->getSomePhrases('endlookingForHandSomeProcess',1);
 
+            $phraseForEnd = str_replace('$$HANDSOME$$', "@"."$krasavaUsername", $phraseForEnd[0]['value']);
             $response = $this->telegram->sendMessage([
                 'chat_id' => $chatId,
-                'text' => 'СЕГОДНЯ, АБСОЛЮТНО ЗАСЛУЖЕННАЯ КРАСОТУЛИЧКА ДНЯ - @'.$krasava['username'].' хорошего дня тебе, пусть сегодня будет лучший день на этой неделе,и завтра тоже!!!'
+                'text' => $phraseForEnd
             ]);
+
 
 
         }else{
@@ -93,9 +97,13 @@ class KtoTutKrasavaCommandHandler extends AbstractCommand
             Log::info(get_class($this).' $krasava here',[$user[0]['username']]);
 
 
+            $phraseForEnd = $this->phrasesService->getSomePhrases('handsomeAlreadyfound',1);
+            $handsomeUsername = $user[0]['username'];
+
+            $phraseForEnd = str_replace('$$HANDSOME$$', "$handsomeUsername", $phraseForEnd[0]['value']);
             $response = $this->telegram->sendMessage([
                 'chat_id' => $chatId,
-                'text' => 'На сегодня, позиция КРАСАВЫ 🔥🔥🔥 дня уже определена. это '.$user[0]['username'].'🔥🔥🔥 (повторно тегать не будем) но если будешь заебывать,сделаем тебя пидором дня'
+                'text' => $phraseForEnd
             ]);
         }
     }

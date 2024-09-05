@@ -1,0 +1,11 @@
+[Unit]
+Description=Lumen Worker
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/php /app/artisan queue:work
+Restart=always
+User=www-data
+
+[Install]
+WantedBy=multi-user.target

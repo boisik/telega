@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MessageHistory;
 use App\Services\PhrasesService;
+use CURLFile;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -111,7 +112,7 @@ class TelegramController extends Controller
             'text' => '@lestet_94 несомненно пока что пидор всех дней пока функционал не будет реализован 💋💋💋💋💋'
         ]);*/
 
-        //https://api.telegram.org/bot6967376895:AAEGSoh5qp1kDyEHixB5-CoTe1WVmDikLTA/setWebhook?url=https://bd97-194-15-147-11.ngrok-free.app/webhook
+        //https://api.telegram.org/bot6967376895:AAEGSoh5qp1kDyEHixB5-CoTe1WVmDikLTA/setWebhook?url=https://4cf9-194-15-147-11.ngrok-free.app/webhook
 
 
     }
@@ -119,27 +120,49 @@ class TelegramController extends Controller
 
     public function test(Request $request)
     {
+
+        $url = 'https://c3d4-194-15-147-11.ngrok-free.app/connectors';
+       // $url = 'https://c3d4-194-15-147-11.ngrok-free.app/connector-plugins/mysql-connector/config/validate';
+        $file_path = 'mongo-debezium-connector.json';
+
+        $json_data = file_get_contents($file_path);
+
+// Инициализируем cURL
         $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL, 'http://api.weatherstack.com/current?access_key=6f364f29c9394a760229e0f7e29bbeef&query=Kerch,Ukraine');
+// Настраиваем cURL
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json'
+        ));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
+
+// Выполняем запрос
+        $result = curl_exec($ch);
+
+        if ($result === false) {
+            echo 'Ошибка при отправке данных: ' . curl_error($ch);
+        } else {
+            echo 'Данные успешно отправлены!';
+            print_r($result);
+        }
+
+        curl_close($ch);
+
+        /*$ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, 'https://c3d4-194-15-147-11.ngrok-free.app/connectors/mysql-connector');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
 
         $result = curl_exec($ch);
         if (curl_errno($ch)) {
             echo 'Error:' . curl_error($ch);
         }
-        curl_close($ch);
-$res = json_decode($result);
+        curl_close($ch);*/
 
-$locationRow = 'Location :'.$res->location->name.' '.$res->location->region.'  ⚓ 🏚🏚 🌈 💞';
-$timeZoneRow = 'Timezone :'.$res->location->timezone_id.'   '.$res->location->localtime.'  ⏲⏰🕰';
-$temperatureRow = 'Temperature :'.$res->current->temperature.'  🌡🌡🌡🌡'.'  feelslike'.$res->current->feelslike;
-$weatherDescriptionsRow = 'Text description :'.$res->current->weather_descriptions[0];
-$humidityRow = 'Humidity :'.$res->current->humidity.'  💧';
-$windRow = 'Wind:'.$res->current->wind_speed.'   '.$res->current->wind_dir;
-
-        return response()
-            ->json($result);
+        return $result;
     }
 }

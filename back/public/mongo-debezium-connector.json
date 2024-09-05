@@ -1,0 +1,11 @@
+{
+  "name": "mongodb-sink",
+  "config": {
+    "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
+    "tasks.max": 1,
+    "topics": "mysql.ahosan.my_table",
+    "connection.uri": "mongodb://admin:my_password@mongodb:27017/test",
+    "database": "test",
+    "collection": "test"
+  }
+}
